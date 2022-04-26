@@ -72,9 +72,9 @@ def updateUserProfile(request):
 
 
     data = request.data
-    user.first_name=data['name'],
-    user.username = data['email'],
-    user.email=data['email'],
+    user.first_name=data['name']
+    user.username = data['email']
+    user.email=data['email']
     if data['password']!= '':
         user.password = make_password(data['password'])
 
