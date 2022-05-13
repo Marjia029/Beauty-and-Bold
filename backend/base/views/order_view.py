@@ -4,11 +4,11 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from backend.base.models import ShippingAddress
+#from backend.base.models import ShippingAddress
 
 from base.products import products
 
-from base.models import Product , Order, OrderItem
+from base.models import Product , Order, OrderItem, ShippingAddress
 
 from base.serializers import ProductSerializer , OrderSerializer
 
@@ -37,7 +37,7 @@ def addOrderItems(request):
             taxPrice = data['taxPrice'],
             shippingPrice = data['shippingPrice'],
             
-            totalprice = data['totalPrice']
+            totalPrice = data['totalPrice']
         )
 
         # (2) Create shipping address
@@ -48,7 +48,7 @@ def addOrderItems(request):
             address = data['shippingAddress']['address'],
             city = data['shippingAddress']['city'],
             postalCode = data['shippingAddress']['postalCode'],
-            country = data['shippingAddress']['country'],
+            country = data['shippingAddress']['country']
 
 
         )

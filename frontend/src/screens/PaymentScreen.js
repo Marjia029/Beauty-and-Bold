@@ -36,7 +36,7 @@ function PaymentScreen({history}) {
         <Form.Group controlId='address'>
             <Form.Label as='legend'>Select Method</Form.Label>
             <Col>
-                <FormCheck
+                {/* <FormCheck
                     type='radio'
                     label='Bkash'
                     id='Bkask'
@@ -54,7 +54,7 @@ function PaymentScreen({history}) {
                     //checked
                     onChange={(e)=> setPaymentMethod(e.target.value)}
                 
-                ></FormCheck>
+                ></FormCheck> */}
                 <FormCheck
                     type='radio'
                     label='Paypal Or CreditCard'

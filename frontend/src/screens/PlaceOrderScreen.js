@@ -22,7 +22,7 @@ function PlaceOrderScreen({history}) {
     cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
     cart.shippingPrice = (cart.itemsPrice>=500 ? 0 : 60).toFixed(2)
     cart.taxPrice = Number(cart.itemsPrice*0.05).toFixed(2)
-    cart.totalprice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
     if(!cart.paymentMethod){
         history.push('/payment')
@@ -44,7 +44,7 @@ function PlaceOrderScreen({history}) {
             itemsPrice: cart.itemsPrice,
             shippingPrice: cart.shippingPrice,
             taxPrice: cart.taxPrice,
-            totalprice: cart.totalprice,
+            totalPrice: cart.totalPrice,
 
 
         }))
@@ -168,7 +168,7 @@ function PlaceOrderScreen({history}) {
                         <ListGroup.Item>
                             <Row>
                                 <Col>Total:</Col>
-                                <Col>Tk.{cart.totalprice}</Col>
+                                <Col>Tk.{cart.totalPrice}</Col>
                             </Row>
                         </ListGroup.Item>
 
