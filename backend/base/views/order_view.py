@@ -15,6 +15,7 @@ from base.serializers import ProductSerializer , OrderSerializer
 # Create your views here.
 
 from rest_framework import status
+from datetime import datetime
 
 
 @api_view(['POST'])
@@ -30,7 +31,7 @@ def addOrderItems(request):
     else:
 
         # (1) Create the order
-
+        print(data['totalPrice'])
         order = Order.objects.create(
             user = user,
             paymentMethod = data['paymentMethod'],
@@ -75,4 +76,39 @@ def addOrderItems(request):
         serializer = OrderSerializer(order, many = False)
 
         return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    user = request.user
+
+    try:
+        order = Order.objects.get(_id=pk)
+
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many = False)
+            return Response(serializer.data)
+
+        else:
+            Response({'detail': 'Not Authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
+
+    except:
+        return Response({'detail': 'Order does not exist'}, status= status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToPaid(request, pk):
+    order = Order.objects.get(_id=pk)
+    order.isPaid = True
+    order.paidAt = datetime.now()
+    order.save()
+    
+    return Response('Order was paid')
+
+
+
+
  
