@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -11,7 +12,7 @@ class Product(models.Model):
 
     name= models.CharField(max_length=200, null=True, blank=True)
 
-    image= models.ImageField(null=True, blank=True)
+    image= models.ImageField(null=True, blank=True, default='/placeholder.png')
 
     brand= models.CharField(max_length=200, null=True, blank=True)
 
