@@ -6,10 +6,10 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 //import FormContainer from '../components/FormContainer'
 //import CheckoutSteps from '../components/CheckoutSteps'
-import { getOrderDetails } from '../actions/orderActions'
-//import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+import { getOrderDetails, payOrder,deliverOrder } from '../actions/orderActions'
+import { ORDER_PAY_RESET, ORDER_DELIVER_RESET} from '../constants/orderConstants'
 
-function OrderScreen({match}) {
+function OrderScreen({match, history}) {
 
     const orderId = match.params.id
     const dispatch = useDispatch()
@@ -17,6 +17,17 @@ function OrderScreen({match}) {
     const orderDetails = useSelector(state=> state.orderDetails)
 
     const{order, error, loading} = orderDetails
+
+    const orderPay = useSelector(state=> state.orderPay)
+    const{ loading: loadingPay, success: successPay} = orderPay
+
+    const orderDelivered = useSelector(state=> state.orderDelivered)
+    const{ loading: loadingDelivered, success: successDelivered} = orderDelivered
+
+    const userLogin = useSelector( state => state.userLogin)
+    const{userInfo} = userLogin
+
+
 
     
    
@@ -28,13 +39,28 @@ function OrderScreen({match}) {
     
     
     useEffect(() =>{
-       if(!order || !order._id == Number(orderId)){
+
+        if(!userInfo){
+            history.push('/login')
+        }
+       
+       if(!order || !order._id == Number(orderId) || successPay || successDelivered){
+          dispatch({ type: ORDER_PAY_RESET })
+          dispatch({ type: ORDER_DELIVER_RESET })
           dispatch(getOrderDetails(orderId)) 
        }
        
         
 
-    }, [dispatch, order, orderId])
+    }, [dispatch, order, orderId, successPay, successDelivered])
+
+    const successPaymentHandler = () =>{
+        dispatch(payOrder(orderId, "paypal"))
+    }
+
+    const deliverPaymentHandler = () =>{
+        dispatch(deliverOrder(order))
+    }
 
   
 
@@ -186,6 +212,35 @@ function OrderScreen({match}) {
                                 <Col>Tk.{order.totalPrice}</Col>
                             </Row>
                         </ListGroup.Item>
+                        {!order.isPaid && (
+                                <ListGroup.Item>
+                                    <Button
+                                        variant='warning'
+                                        type="button"
+                                        className="btn-block w-100"
+                                        disabled={order.isPaid}
+                                        onClick={successPaymentHandler}
+                                    >
+                                        Payment
+                                    </Button>
+                                </ListGroup.Item>
+                        )}
+
+                        {loadingDelivered && <Loader/>}
+
+                        {!order.isDelivered && userInfo && userInfo.isAdmin && order.isPaid && (
+                                <ListGroup.Item>
+                                    <Button
+                                        variant='warning'
+                                        type="button"
+                                        className="btn-block w-100"
+                                        disabled={order.isDelivered && order.isPaid}
+                                        onClick={deliverPaymentHandler}
+                                    >
+                                        Mark as delivered
+                                    </Button>
+                                </ListGroup.Item>
+                        )}
 
                        
                         

@@ -33,6 +33,9 @@ import {
 
  } from '../constants/userConstants'
 
+ import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
+ //import { CART_RESET_SHIPPING_ADDRESS } from '../constants/cartConstants'
+
 
  export const login = (email, password) => async (dispatch) => {
      try{
@@ -79,8 +82,11 @@ import {
         localStorage.removeItem('userInfo')
         dispatch( {type: USER_LOGOUT})
         dispatch({type: USER_DETAILS_RESET})
+       // dispatch({type: CART_RESET_SHIPPING_ADDRESS})
 
         dispatch({type: USER_LIST_RESET})
+
+        dispatch({type: ORDER_LIST_MY_RESET})
  }
 
 

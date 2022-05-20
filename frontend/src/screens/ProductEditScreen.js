@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { Form, Button} from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
-import { listProductDetails } from '../actions/productActions'
-import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
+import { listProductDetails, updateProduct } from '../actions/productActions'
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants'
 
 
  function ProductEditScreen({match, history}) {
@@ -20,6 +21,7 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
     const [brand, setBrand] = useState('')
     const [countInStock, setCountInStock] = useState(0)
     const [description, setDescription] = useState('')
+    const [uploading, setUploading] = useState(false)
     
 
     // const [password, setPassword] = useState('')
@@ -31,14 +33,14 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
     const productDetails = useSelector(state => state.productDetails)
     const {error, loading, product} = productDetails
 
-    // const userUpdate = useSelector(state => state.userUpdate)
-    // const {error: errorUpdate, loading: loadingUpdate, success: successUpdate} = userUpdate
+    const productUpdate = useSelector(state => state.productUpdate)
+    const {error: errorUpdate, loading: loadingUpdate, success: successUpdate} = productUpdate
 
     useEffect(() => {
-        // if (successUpdate) {
-        //     dispatch({ type: USER_UPDATE_RESET })
-        //     history.push('/admin/userlist')
-        // } else {
+        if (successUpdate) {
+            dispatch({ type:PRODUCT_UPDATE_RESET })
+            history.push('/admin/productlist')
+        } else {
             if (!product.name || product._id !== Number(productId)) {
                 dispatch(listProductDetails(productId))
             } else {
@@ -50,21 +52,55 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
                 setCountInStock(product.countInStock)
                 setDescription(product.description)
             }
-        //}
+        }
 
 
-    }, [dispatch, product, productId, history])
+    }, [dispatch, product, productId, history, successUpdate])
 
     const submitHandler = (e) => {
         e.preventDefault()
-        //dispatch(updateUser({ _id: user._id, name, email, isAdmin }))
-        // if( password !== confirmPassword){
-        //     setMessage('Password do not match')
-        // }else{
-        //     dispatch(register(name, email, password))
-        // }
-       
-        //console.log('lellleellellelle')
+
+        dispatch(
+            updateProduct({
+                _id: product._id,
+                name,
+                
+                image,
+                price,
+                
+                category,
+                brand,
+                countInStock,
+                description
+            })
+        )
+        
+    }
+
+    const uploadFileHandler = async (e) =>{
+        console.log('fileeeeee')
+        const file = e.target.files[0]
+        const formData = new FormData()
+        formData.append('image', file)
+        formData.append('product_id', productId)
+        setUploading(true)
+        try{
+            const config = {
+                headers: { "Content-Type": "multipart/form-data" } 
+            }
+
+            const { data } = await axios.post(
+                "/api/products/upload/",
+                formData,
+                config
+            )
+            setImage(data)
+            setUploading(false)
+            
+
+        }catch(error){
+            setUploading(false)
+        }
     }
     return (
         <div>
@@ -75,8 +111,8 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
             <FormContainer>
                 <h1>Edit Product</h1>
  
-                {/* {loadingUpdate && <Loader/>}
-                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>} */}
+                {loadingUpdate && <Loader/>}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
 
                 {loading ? <Loader/> : error? <Message variant='danger'>{error}</Message> : (
 
@@ -105,22 +141,30 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
                                 onChange={(e)=> setImage(e.target.value)}
 
                             >
-
                             </Form.Control>
 
-                    </Form.Group>
+                            
+                            
 
+                    </Form.Group>
+                    <Form.Group controlId="formFile" className="mb-3">
+                            <Form.Label>Change Image</Form.Label>
+                            <Form.Control
+                                type="file"
+                                onChange={uploadFileHandler}
+                            />
+                            {uploading && <Loader />}
+                    </Form.Group>
+                    
 
                     <Form.Group controlId="price">
                             <Form.Label>Price</Form.Label>
-                                <Form.Control
-                                    type="Number"
-                                    placeholder='Enter product price'
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.checked)}
-                                >
-
-                                </Form.Control>
+                            <Form.Control
+                                type="number"
+                                placeholder="Enter price"
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                            ></Form.Control>
                     </Form.Group>
 
                     <Form.Group controlId='category'>
@@ -153,16 +197,16 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
 
                     </Form.Group>
 
-                    <Form.Group controlId="countInStock">
-                            <Form.Label>CountInStock</Form.Label>
-                                <Form.Control
-                                    type="Number"
-                                    placeholder='Enter CountInStock'
-                                    value={countInStock}
-                                    onChange={(e) => setCountInStock(e.target.checked)}
-                                >
-
-                                </Form.Control>
+                    <Form.Group controlId="countinstock">
+                            <Form.Label>Stock</Form.Label>
+                            <Form.Control
+                                type="number"
+                                placeholder="Enter Stock"
+                                value={countInStock}
+                                onChange={(e) =>
+                                    setCountInStock(e.target.value)
+                                }
+                            ></Form.Control>
                     </Form.Group>
 
                     <Form.Group controlId='description'>
@@ -187,7 +231,7 @@ import { PRODUCT_UPDATE_RESET } from '../constants/userConstants'
 
 
                     <h3><Button type='submit' variant='warning'>
-                    Update
+                            Update
                         </Button> </h3>
                     </Form>
 

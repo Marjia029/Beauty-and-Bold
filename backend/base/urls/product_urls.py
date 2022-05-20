@@ -12,10 +12,9 @@ urlpatterns = [
 
     path('create/', views.createProduct, name="product-create"),
     path('<str:pk>/', views.getProduct, name="product"),
-
+    path('<str:pk>/reviews/', views.createProductReview, name="create-review"),
     
-    # path('upload/', views.uploadImage, name="image-upload"),
-    # path('<str:pk>/reviews/', views.createProductReview, name="create-review"),
+    path('upload/', views.uploadImage, name="image-upload"),
     # path('top/', views.getTopProducts, name="top-products"),
     #path('<str:pk>/', views.getProduct, name="product"),
     path('update/<str:pk>/', views.updateProduct, name="product-update"),

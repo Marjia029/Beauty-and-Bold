@@ -87,7 +87,7 @@ function ProductScreen({ match, history }) {
                                                 <Row>
                                                     <Col>Price: </Col>
                                                     <Col>
-                                                        <strong>${product.price}</strong>
+                                                        <strong>Tk{product.price}</strong>
                                                     </Col>
                                                 </Row>
 
