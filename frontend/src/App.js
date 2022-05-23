@@ -26,6 +26,9 @@ import ProductEditScreen from './screens/ProductEditScreen'
 
 
 import OrderListScreen from './screens/OrderListScreen'
+
+import EmailVarified from './screens/EmailVarified'
+import EmailNotVarified from './screens/EmailNotVarified'
 //import Product from './components/Product' 
 
 function App() {
@@ -51,6 +54,8 @@ function App() {
           <Route path='/admin/product/:id/edit' component={ProductEditScreen}  / >
 
           <Route path='/admin/orderlist' component={OrderListScreen}  / >
+          <Route path='/emailvarified' component={EmailVarified}  / >
+          <Route path='/emailnotvarified' component={EmailNotVarified}  / >
             
         </Container>
         

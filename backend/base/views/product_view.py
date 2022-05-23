@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 #from backend.base.models import Review
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from base.products import products
 
 from base.models import Product, Review
@@ -17,16 +19,31 @@ from rest_framework import status
 
 
 
+
 @api_view(['GET'])
 def getProducts(request):
-    products= Product.objects.all()
-    serializer= ProductSerializer(products, many=True)
-    return Response(serializer.data) 
+    query = request.query_params.get('keyword')
+    if query == None:
+        query = ''
+    products = Product.objects.filter(name__icontains=query)
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 4)
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    if page == None:
+        page = 1
+    page = int(page)
+    serializer = ProductSerializer(products, many=True)
+    return Response({'products': serializer.data, 'page': page, 'pages': paginator.num_pages})
 
 
 
 @api_view(['GET'])
-
 def getProduct(request,pk):
     product= Product.objects.get(_id=pk)
     serializer= ProductSerializer(product, many=False)
@@ -88,7 +105,9 @@ def createProductReview(request, pk):
     user = request.user
     product = Product.objects.get(_id=pk)
     data = request.data
+
     alreadyExists = product.review_set.filter(user=user).exists()
+    
     if alreadyExists:
         content = {'detail': 'Product already reviewed'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)

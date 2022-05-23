@@ -30,8 +30,6 @@ import { register } from '../actions/userActions'
             history.push(redirect)
         }
 
-
-
     }, [history, userInfo, redirect])
 
     const submitHandler = (e) => {
@@ -40,6 +38,8 @@ import { register } from '../actions/userActions'
             setMessage('Password do not match')
         }else{
             dispatch(register(name, email, password))
+            history.push(redirect)
+            
         }
        
         //console.log('Submitted')

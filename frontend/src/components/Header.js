@@ -1,10 +1,28 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Navbar,Nav,Container,Row, NavDropdown } from 'react-bootstrap'
+import { Navbar,Nav,Container,Row, NavDropdown, Button, Form } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { useHistory } from 'react-router-dom'
 import {logout} from '../actions/userActions'
+//import SearchBox from './SearchBox.js'
+import SearchBox from './SearchBox'
 
 function Header() {
+
+    
+
+
+    const [keyword, setKeyword] = useState('')
+
+    // const submitHandler = (e) =>{
+    //     e.preventDefault()
+    //     if (keyword) {
+    //         history.push(`/?keyword=${keyword}`)
+    //     } else {
+    //         history.push(history.location.pathname) //
+    //     }
+    // }
+
 
     const userLogin = useSelector(state => state.userLogin)
     const {userInfo} = userLogin
@@ -44,55 +62,89 @@ function Header() {
 
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
 
-                        <LinkContainer to='/cart'>
-                            <Nav.Link><i className="fas fa-shopping-cart">Cart</i> </Nav.Link>
-                        </LinkContainer>
+                        
+                        <Nav className="mr-auto" variant='warning'>
 
-                        {userInfo ? (
-                            <NavDropdown title = {userInfo.name} id = 'username'>
-                                <LinkContainer to = '/profile'>
-                                    <NavDropdown.Item>Profile</NavDropdown.Item>
-                                </LinkContainer>
-
-                                <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
-
-                            </NavDropdown>
-                        ) : (
-                            <LinkContainer to='/login'>
-                            
-                                <Nav.Link ><i className="fas fa-user">LogIn</i></Nav.Link>
+                            <LinkContainer to='/cart'>
+                                <Nav.Link><i className="fas fa-shopping-cart">Cart</i> </Nav.Link>
                             </LinkContainer>
-                            ) }
 
-                        
-                        {userInfo && userInfo.isAdmin && (
-                                
-                                <NavDropdown title="Admin Panel" id="adminmenu">
-                                    <LinkContainer to="/admin/userlist">
-                                        <NavDropdown.Item>
-                                            Users
-                                        </NavDropdown.Item>
+                            {userInfo ? (
+                                <NavDropdown title = {userInfo.name} id = 'username'>
+                                    <LinkContainer to = '/profile'>
+                                        <NavDropdown.Item>Profile</NavDropdown.Item>
                                     </LinkContainer>
-                                    <LinkContainer to="/admin/productlist">
-                                        <NavDropdown.Item>
-                                            Products
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
-                                    <LinkContainer to="/admin/orderlist">
-                                        <NavDropdown.Item>
-                                            Orders
-                                        </NavDropdown.Item>
-                                    </LinkContainer>
+
+                                    <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+
                                 </NavDropdown>
-                        )}
-                        
-                        
-                        
-                        
-                        
-                    </Nav>
+                            ) : (
+                                <LinkContainer to='/login'>
+                                
+                                    <Nav.Link ><i className="fas fa-user">LogIn</i></Nav.Link>
+                                </LinkContainer>
+                                ) }
+
+                            
+                            {userInfo && userInfo.isAdmin && (
+                                    
+                                    <NavDropdown title="Admin Panel" id="adminmenu">
+                                        <LinkContainer to="/admin/userlist">
+                                            <NavDropdown.Item>
+                                                Users
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        <LinkContainer to="/admin/productlist">
+                                            <NavDropdown.Item>
+                                                Products
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                        <LinkContainer to="/admin/orderlist">
+                                            <NavDropdown.Item>
+                                                Orders
+                                            </NavDropdown.Item>
+                                        </LinkContainer>
+                                    </NavDropdown>
+                            )}
+                            
+                            
+                            
+                            
+                            
+                        </Nav>
+
+
+                        {/* <Form onSubmit={submitHandler} inline>
+                            <Form.Control
+                                type = 'text'
+                                name='q'
+                                onChange={(e)=> setKeyword(e.target.value)}
+                                className='mr-sm-2 ml-sm-5'
+                            >
+                                <Button type='submit' variant='outline-success' className='p-2'>
+                                    search
+                                </Button>
+
+                            </Form.Control>
+
+                        </Form> */}
+                        {/* <Form onSubmit={submitHandler} className="d-flex" inline>
+                            <Form.Control
+                                type="text"
+                                name="q"
+                                onChange={(e) => setKeyword(e.target.value)}
+                                className="mr-sm-2 ml-sm-5 text-end"
+                                placeholder='Search Products'
+                            ></Form.Control>
+                            <Button type="submit" className="p-2" variant='outline-success'>
+                                <i className='fas fa-search'></i>
+                            </Button>
+                        </Form> */}
+
+                        <SearchBox/>
+                       
+                                            
                     </Navbar.Collapse>
                 </Container>
                 </Navbar>

@@ -21,6 +21,6 @@ urlpatterns = [
     path('<str:pk>/', views.getUserById, name='user'),
     path('update/<str:pk>/', views.updateUser, name='user-update'),
     path('delete/<str:pk>/', views.deleteUser, name='user-delete'),
-    # path('verify/<auth_token>', views.verify, name='user-verify'),
+    path('verify/<auth_token>', views.verify, name='user-verify'),
 
 ]
